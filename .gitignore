@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+crm.db
+*.pdf
+app/static/invoices/*.pdf

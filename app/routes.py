@@ -7,7 +7,7 @@ from .utils import role_required
 import json, io
 import os
 
-from xhtml2pdf import pisa
+
 from flask import current_app as app
 from datetime import datetime
 from sqlalchemy import func, extract
@@ -435,4 +435,5 @@ def reports():
         sales_values=sales_values,
         followup_labels=followup_status_labels,
         followup_data=followup_status_data
+
     )

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary fw-bold">
+        <i class="bi bi-bar-chart-line"></i> Reports & Insights
+    </h2>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6>Total Follow-ups</h6>
+                <h3 class="text-primary">{{ total_followups }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6>Pending</h6>
+                <h3 class="text-warning">{{ pending }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6>Completed</h6>
+                <h3 class="text-success">{{ completed }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6>Total Sales</h6>
+                <h3 class="text-info">₹{{ "%.2f"|format(total_sales) }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow p-3 mb-4">
+                <h6 class="text-center text-muted mb-2">Follow-up Status Overview</h6>
+                <canvas id="followupChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow p-3 mb-4">
+                <h6 class="text-center text-muted mb-2">Monthly Sales</h6>
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const followupCtx = document.getElementById('followupChart');
+new Chart(followupCtx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ followup_labels | tojson }},
+        datasets: [{
+            data: {{ followup_data | tojson }},
+            backgroundColor: ['#ffcc00', '#28a745']
+        }]
+    },
+});
+
+const salesCtx = document.getElementById('salesChart');
+new Chart(salesCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ months | tojson }},
+        datasets: [{
+            label: 'Sales (₹)',
+            data: {{ sales_values | tojson }},
+            backgroundColor: '#007bff'
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endblock %}

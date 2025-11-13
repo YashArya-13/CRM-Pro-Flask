@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Follow-ups</h3>
+<div class="row">
+  <div class="col-md-5">
+    <div class="card p-3">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.client_name.label }} {{ form.client_name(class="form-control") }}</div>
+        <div class="mb-3">{{ form.client_phone.label }} {{ form.client_phone(class="form-control") }}</div>
+        <div class="mb-3">{{ form.followup_date.label }} {{ form.followup_date(class="form-control") }}</div>
+        <div class="mb-3">{{ form.followup_time.label }} {{ form.followup_time(class="form-control") }}</div>
+        <div class="mb-3">{{ form.note.label }} {{ form.note(class="form-control") }}</div>
+        {{ form.submit(class="btn btn-primary w-100") }}
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="card p-3">
+      <h5>All Follow-ups</h5>
+      <ul class="list-group">
+        {% for f in followups %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <b>{{ f.client_name }}</b><br>
+            {{ f.client_phone }}<br>
+            {{ f.followup_datetime.strftime('%Y-%m-%d %H:%M') }}<br>
+            <small>Status: {{ f.status }}</small>
+          </div>
+          <div>
+            {% if f.status != 'completed' %}
+            <a href="{{ url_for('complete_followup', id=f.id) }}" class="btn btn-sm btn-outline-success">Mark Done</a>
+            {% endif %}
+          </div>
+        </li>
+        {% else %}
+        <li class="list-group-item">No follow-ups yet</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

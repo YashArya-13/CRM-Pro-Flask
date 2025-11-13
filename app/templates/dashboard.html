@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid mt-4 px-4">
+  <h2 class="fw-bold text-primary mb-4">
+    <i class="bi bi-speedometer2"></i> Dashboard Overview
+  </h2>
+
+  <!-- Top Metric Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 p-3 metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Clients</h6>
+            <h3 class="text-primary fw-bold">{{ total_clients }}</h3>
+          </div>
+          <div class="icon-box bg-primary bg-opacity-10 text-primary">
+            <i class="bi bi-people fs-3"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 p-3 metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Follow-ups</h6>
+            <h3 class="text-info fw-bold">{{ total_followups }}</h3>
+          </div>
+          <div class="icon-box bg-info bg-opacity-10 text-info">
+            <i class="bi bi-bell fs-3"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 p-3 metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Quotations</h6>
+            <h3 class="text-warning fw-bold">{{ total_quotations }}</h3>
+          </div>
+          <div class="icon-box bg-warning bg-opacity-10 text-warning">
+            <i class="bi bi-file-earmark-text fs-3"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 p-3 metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Invoices</h6>
+            <h3 class="text-success fw-bold">{{ total_invoices }}</h3>
+          </div>
+          <div class="icon-box bg-success bg-opacity-10 text-success">
+            <i class="bi bi-receipt fs-3"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="row mb-5">
+    <div class="col-md-6">
+      <div class="card shadow p-3 border-0">
+        <h6 class="text-muted mb-2">Monthly Follow-ups Trend</h6>
+        <canvas id="followupTrend"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow p-3 border-0">
+        <h6 class="text-muted mb-2">Invoices Generated Over Time</h6>
+        <canvas id="invoiceTrend"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Followups and Actions -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow border-0 p-3">
+        <h6 class="text-muted mb-3">Recent Follow-ups</h6>
+        <ul class="list-group list-group-flush">
+          {% for f in recent_followups %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ f.client_name }}</span>
+            <small class="text-muted">{{ f.followup_datetime.strftime('%d %b %Y') }}</small>
+          </li>
+          {% else %}
+          <li class="list-group-item text-center text-muted">No recent follow-ups</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card shadow border-0 p-3">
+        <h6 class="text-muted mb-3">Quick Actions</h6>
+        <div class="d-flex flex-wrap justify-content-around">
+          <a href="{{ url_for('followups') }}" class="btn btn-outline-primary m-2">
+            <i class="bi bi-person-plus"></i> Add Follow-up
+          </a>
+          <a href="{{ url_for('quotations') }}" class="btn btn-outline-success m-2">
+            <i class="bi bi-file-earmark-plus"></i> Create Quotation
+          </a>
+          <a href="{{ url_for('invoices') }}" class="btn btn-outline-warning m-2">
+            <i class="bi bi-receipt-cutoff"></i> Create Invoice
+          </a>
+          <a href="{{ url_for('reports') }}" class="btn btn-outline-info m-2">
+            <i class="bi bi-bar-chart-line"></i> View Reports
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // follow-ups data from server
+  const followupData = {{ followup_counts|tojson }};
+  const invoiceData  = {{ invoice_counts|tojson }};
+
+  // Follow-ups (line)
+  const followupCtx = document.getElementById('followupTrend').getContext('2d');
+  new Chart(followupCtx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        label: 'Follow-ups',
+        data: followupData,
+        borderColor: '#0d6efd',
+        backgroundColor: 'rgba(13,110,253,0.12)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: {precision:0} } }
+    }
+  });
+
+  // Invoices (bar)
+  const invoiceCtx = document.getElementById('invoiceTrend').getContext('2d');
+  new Chart(invoiceCtx, {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [{
+        label: 'Invoices',
+        data: invoiceData,
+        backgroundColor: '#198754'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: {precision:0} } }
+    }
+  });
+</script>
+
+
+<style>
+.metric-card:hover {
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+.icon-box {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+</style>
+{% endblock %}

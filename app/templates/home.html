@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 text-center">
+  <h1 class="fw-bold text-primary mb-3">Welcome to CRM Pro</h1>
+  <p class="lead text-muted mb-4">
+    A complete Role-Based Customer Relationship Management (CRM) System designed to manage your business operations smoothly.
+  </p>
+
+  <hr class="my-4">
+
+  <div class="row justify-content-center mb-5">
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 p-4 h-100">
+        <i class="bi bi-people fs-1 text-primary mb-3"></i>
+        <h5>Follow-ups Management</h5>
+        <p class="text-muted">Track client communications, set reminders, and never miss a follow-up again.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 p-4 h-100">
+        <i class="bi bi-file-earmark-text fs-1 text-success mb-3"></i>
+        <h5>Quotations & Invoices</h5>
+        <p class="text-muted">Easily create, share, and export quotations and invoices in PDF format.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 p-4 h-100">
+        <i class="bi bi-bar-chart-line fs-1 text-warning mb-3"></i>
+        <h5>Reports & Analytics</h5>
+        <p class="text-muted">Gain insights into your sales and performance through interactive reports.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="fw-bold text-dark mb-3">About CRM Pro</h4>
+  <p class="text-muted w-75 mx-auto">
+    CRM Pro is a Flask-based Role-Based Access Control (RBAC) system that allows multiple users with different roles — 
+    such as Admin, Manager, Sales, and Accountant — to collaborate securely. It’s built for businesses that need 
+    efficiency, transparency, and automation in client management.
+  </p>
+
+  <a href="{{ url_for('dashboard') }}" class="btn btn-success px-4 mt-3">
+    Go to Dashboard
+  </a>
+</div>
+{% endblock %}

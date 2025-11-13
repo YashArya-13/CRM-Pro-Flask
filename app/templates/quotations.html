@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Quotations</h3>
+<div class="row">
+  <div class="col-md-5">
+    <div class="card p-3">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.client_name.label }} {{ form.client_name(class="form-control") }}</div>
+        <div class="mb-3">{{ form.client_phone.label }} {{ form.client_phone(class="form-control") }}</div>
+        <div class="mb-3">{{ form.product_name.label }} {{ form.product_name(class="form-control") }}</div>
+        <div class="mb-3">{{ form.product_details.label }} {{ form.product_details(class="form-control") }}</div>
+        <div class="mb-3">{{ form.website_price.label }} {{ form.website_price(class="form-control") }}</div>
+        {{ form.submit(class="btn btn-primary") }}
+      </form>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card p-3">
+      <h5>All Quotations</h5>
+      <ul class="list-group">
+        {% for q in quotes %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <b>{{ q.client_name }}</b><br>
+            <small>{{ q.product_name }} – ₹{{ q.website_price }}</small>
+          </div>
+          <a class="btn btn-sm btn-outline-success" href="{{ url_for('share_quotation', q_id=q.id) }}">Share via WhatsApp</a>
+        </li>
+        {% else %}
+        <li class="list-group-item">No quotations yet</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
